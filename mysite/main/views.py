@@ -1,3 +1,4 @@
+from forms import PostForm
 from .models import Post, User
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
@@ -6,9 +7,16 @@ from django.contrib import messages
 
 # Create your views here.
 def homepage(request):
+    #create new content / post
+    if request.method == 'POST':
+        form = PostForm(request.POST)
+        if form.is_valid():
+            content = form.save()
+            print(form.cleaned_data.get('title'))
+
     return render(request = request,
                   template_name='main/home.html',
-                  context= {"Posts":User.objects.all})
+                  context= {"Posts":Post.objects.all})
 
 def register(request):
     if request.method == "POST":
@@ -58,3 +66,6 @@ def login_request(request):
     return render(request = request,
                     template_name = "main/login.html",
                     context={"form":form})
+
+def create_content_request(request):
+    if request.method == 'POST'
