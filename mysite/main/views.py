@@ -1,22 +1,31 @@
-from forms import PostForm
-from .models import Post, User
+from .forms import PostForm
+from .models import Post
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import logout, authenticate, login
 from django.contrib import messages
+from django.utils import timezone
 
 # Create your views here.
 def homepage(request):
     #create new content / post
     if request.method == 'POST':
         form = PostForm(request.POST)
-        if form.is_valid():
-            content = form.save()
-            print(form.cleaned_data.get('title'))
 
+        if form.is_valid() and request.user.is_authenticated:
+            content = form.save(commit=False)
+            content.pub_date = timezone.now()
+
+            content.poster = request.user.username
+            content.save()
+        elif form.is_valid() and not request.user.is_authenticated:
+            messages.error(request, "Log in first to post content!")
+
+    else:
+        form = PostForm
     return render(request = request,
                   template_name='main/home.html',
-                  context= {"Posts":Post.objects.all})
+                  context= {"Posts":Post.objects.all, "form":form})
 
 def register(request):
     if request.method == "POST":
@@ -66,6 +75,3 @@ def login_request(request):
     return render(request = request,
                     template_name = "main/login.html",
                     context={"form":form})
-
-def create_content_request(request):
-    if request.method == 'POST'

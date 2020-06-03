@@ -6,20 +6,25 @@
 <div class="col s12 m6">
   <div class="card blue-grey darken-1">
     <div class="card-content white-text">
-      <span class="card-title">{{post.title}}</span>
+      <header class="card-title">{{post.title}}</header>
       <span>{{post.poster}}</span>
     </div>
     <div class="card-action">
-      <a href="#">This is a link</a>
-      <a href="#">This is a link</a>
+      <div>{{post.content}}</div>
     </div>
   </div>
 </div>
 </div>
 {% endfor %}
 
-<form>
-  <
+<form method='POST'>
+  {% csrf_token %}
+
+  {{form.as_p}}
+
+  <button style="background-color:gray; color:white" class="btn btn-outline-info" type="submit">Post!</button>
+
+
 </form>
 
 {% endblock %}
